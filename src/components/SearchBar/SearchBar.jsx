@@ -5,10 +5,6 @@ import { ReactComponent as SearchImage } from '../images/look-up.svg';
 import { ButtonEl } from './Button';
 
 export const SearchBar = ({ onSubmit }) => {
-  const submit = () => {
-    return 5;
-  };
-
   const [query, setQuery] = useState('');
 
   const handleChange = e => setQuery(e.currentTarget.value);
