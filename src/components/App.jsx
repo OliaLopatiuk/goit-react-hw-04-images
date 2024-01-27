@@ -18,36 +18,38 @@ export const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    setPhotos([]);
-    setCurrentPage(1);
-    if (query) {
-      fetchImages();
+    if (!query) {
+      return;
     }
-  }, [query, fetchImages]);
 
-  const fetchImages = () => {
-    PixabayAPIService(query, currentPage)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(new Error('Error'));
-      })
-      .then(photos => {
-        setPhotos(prev => [...prev, ...photos.hits]);
-        setMaxPages(Math.ceil(photos.totalHits / 12));
-        setStatus('fulfiled');
-        setCurrentPage(prev => prev + 1);
-      });
+    const fetchImages = () => {
+      setStatus('loading');
+      PixabayAPIService(query, currentPage)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          return Promise.reject(new Error('Error'));
+        })
+        .then(photos => {
+          console.log('fetch');
+          setPhotos(prev => [...prev, ...photos.hits]);
+          setMaxPages(Math.ceil(photos.totalHits / 12));
+          setStatus('fulfiled');
+        });
+    };
+
+    fetchImages();
+  }, [query, currentPage]);
+
+  const updateCurrentPage = () => {
+    setCurrentPage(prevPage => prevPage + 1);
   };
 
   const handleSubmit = query => {
+    setPhotos([]);
+    setCurrentPage(1);
     setQuery(query);
-  };
-
-  const handleClick = () => {
-    setStatus('loading');
-    fetchImages();
   };
 
   const toggleModal = (img, tags) => {
@@ -61,7 +63,7 @@ export const App = () => {
       <SearchBar onSubmit={handleSubmit}></SearchBar>
       <ImageGallery photos={photos} onClick={toggleModal}></ImageGallery>
       {status === 'fulfiled' && currentPage <= maxPages && (
-        <Button onClick={handleClick}></Button>
+        <Button onClick={updateCurrentPage}></Button>
       )}
       {status === 'loading' && (
         <Grid
