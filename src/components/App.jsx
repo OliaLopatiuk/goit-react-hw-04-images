@@ -23,7 +23,7 @@ export const App = () => {
     if (query) {
       fetchImages();
     }
-  }, [query]);
+  }, [query, fetchImages]);
 
   const fetchImages = () => {
     PixabayAPIService(query, currentPage)

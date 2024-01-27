@@ -17,7 +17,7 @@ export const Modal = ({ onClose, children }) => {
     return () => {
       window.removeEventListener('keydown', handleClose);
     };
-  }, []);
+  }, [handleClose]);
 
   const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
